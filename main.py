@@ -12,5 +12,3 @@ em = em.dropna(axis=0, how='all')
 
 pop, gdp, em = asn.years_merger(pop, gdp, em)
 
-print(em)
-print(gdp)
