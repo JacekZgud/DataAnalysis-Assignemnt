@@ -1,16 +1,24 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import argparse
+import csv
+import os.path
+import numpy as np
+import pandas as pd
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def file_opener(file_name):
+    if file_name == 'co2-fossil-by-nation_zip':
+        path = os.path.join(os.getcwd(), 'Data', file_name, 'data', 'fossil-fuel-co2-emissions-by-nation_csv.csv')
+    else:
+        path = os.path.join(os.getcwd(), 'Data', file_name)
+        path = os.path.join(path, f"{file_name}.csv")
+    file = pd.read_csv(path, header=2)
+    return file
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+gdp = file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
+pop = file_opener('API_SP.POP.TOTL_DS2_en_csv_v2_4751604')
+emiss = file_opener('co2-fossil-by-nation_zip')
+print(pop.columns)
+print(gdp.columns)
+print(emiss)
+
