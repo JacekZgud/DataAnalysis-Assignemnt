@@ -1,24 +1,16 @@
-import argparse
-import csv
-import os.path
 import numpy as np
 import pandas as pd
+import assignment as asn
 
+gdp = asn.file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
+pop = asn.file_opener('API_SP.POP.TOTL_DS2_en_csv_v2_4751604')
+em = asn.file_opener('co2-fossil-by-nation_zip')
 
-def file_opener(file_name):
-    if file_name == 'co2-fossil-by-nation_zip':
-        path = os.path.join(os.getcwd(), 'Data', file_name, 'data', 'fossil-fuel-co2-emissions-by-nation_csv.csv')
-    else:
-        path = os.path.join(os.getcwd(), 'Data', file_name)
-        path = os.path.join(path, f"{file_name}.csv")
-    file = pd.read_csv(path, header=2)
-    return file
+pop = pop.dropna(axis=1, how='all')
+gdp = gdp.dropna(axis=1, how='all')
+em = em.dropna(axis=0, how='all')
 
+pop, gdp, em = asn.years_merger(pop, gdp, em)
 
-gdp = file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
-pop = file_opener('API_SP.POP.TOTL_DS2_en_csv_v2_4751604')
-emiss = file_opener('co2-fossil-by-nation_zip')
-print(pop.columns)
-print(gdp.columns)
-print(emiss)
-
+print(em)
+print(gdp)
