@@ -25,12 +25,10 @@ else:
     pop, gdp, em = asn.years_merger(pop, gdp, em)
 
 # Clean Country names
-pop['Country Name'] = pop['Country Name'].apply(lambda x: x.lower())
-gdp['Country Name'] = gdp['Country Name'].apply(lambda x: x.lower())
-em.Country = em.Country.apply(lambda x: x.lower())
-em.Country = em.Country.apply(lambda x: re.sub(" \(.*?\)", "", x))
-pop['Country Name'] = pop['Country Name'].apply(lambda x: re.sub(" \(.*?\)", "", x))
-gdp['Country Name'] = gdp['Country Name'].apply(lambda x: re.sub(" \(.*?\)", "", x))
+pop['Country Name'] = asn.country_cleaner(pop['Country Name'])
+gdp['Country Name'] = asn.country_cleaner(gdp['Country Name'])
+em.Country = asn.country_cleaner(em.Country)
+
 
 #  Adjust and merge gdp and pop
 pop = pop.melt(id_vars='Country Name', var_name='Year', value_name='Population')
@@ -43,4 +41,15 @@ em = em[em.Country.isin(np.intersect1d(em.Country.unique(), pop_gdp['Country Nam
 em.rename(columns={'Country': 'Country Name', 'Total': 'Total emissions', 'Per Capita': 'Emissions per Capita'},
           inplace='True')
 pop_gdp.Year = pop_gdp.Year.astype('int64')
-data = pd.merge(pop_gdp,em, how='left', on=['Year','Country Name'])
+data = pd.merge(pop_gdp,em, how='left', on=['Year', 'Country Name'])
+print(data.columns)
+print(data.groupby(['Country Name', 'Year'])["Emissions per Capita"].sum())
+
+# CO2 emissions per capita
+
+#Gdp per capita for each year top 5
+
+# emissions per capita loss in last 10 years
+print(asn.emission_balance(data)[0])
+print(asn.emission_balance(data)[1])
+
