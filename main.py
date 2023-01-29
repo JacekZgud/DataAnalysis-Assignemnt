@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import assignment as asn
-import re
 
 # import data
 gdp = asn.file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
@@ -41,13 +40,15 @@ em = em[em.Country.isin(np.intersect1d(em.Country.unique(), pop_gdp['Country Nam
 em.rename(columns={'Country': 'Country Name', 'Total': 'Total emissions', 'Per Capita': 'Emissions per Capita'},
           inplace='True')
 pop_gdp.Year = pop_gdp.Year.astype('int64')
-data = pd.merge(pop_gdp,em, how='left', on=['Year', 'Country Name'])
+# merge pop_gdp and emissions
+data = pd.merge(pop_gdp, em, how='left', on=['Year', 'Country Name'])
+data['Emissions per Capita'] = data['Total emissions']/data['Population']
 print(data.columns)
 print(data.groupby(['Country Name', 'Year'])["Emissions per Capita"].sum())
 
 # CO2 emissions per capita
 
-#Gdp per capita for each year top 5
+# Gdp per capita for each year top 5
 
 # emissions per capita loss in last 10 years
 print(asn.emission_balance(data)[0])
