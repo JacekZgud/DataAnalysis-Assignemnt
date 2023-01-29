@@ -1,6 +1,7 @@
 import os.path
 import pandas as pd
 import numpy as np
+import re
 
 
 def file_opener(file_name):
@@ -34,3 +35,19 @@ def years_interval_merger(population, gdp_loc, emissions, beginning, end):
     gdp_loc = pd.concat([gdp_loc.iloc[:, [0]], gdp_loc.loc[:, all_years]], axis=1)
     population = pd.concat([population.iloc[:, [0]], population.loc[:, all_years]], axis=1)
     return[population, gdp_loc, emissions]
+
+
+def country_cleaner(data):
+    data = data.apply(lambda x: x.lower()).apply(lambda x: re.sub(" \(.*?\)", "", x))
+    return data
+
+
+def emission_balance(data):
+    years = [0, 0]
+    years[0], years[1] = data.Year.unique()[-1], data.Year.unique()[-11]
+    loss = data[data.Year.isin(years)]
+    loss.loc[loss.Year.isin([years[1]]), ['Emissions per Capita']] \
+        = loss[loss.Year.isin([years[1]])]['Emissions per Capita'].apply(lambda x: -x)
+    r1 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nlargest()
+    r2 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nsmallest()
+    return[r1, r2]
