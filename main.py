@@ -43,14 +43,21 @@ pop_gdp.Year = pop_gdp.Year.astype('int64')
 # merge pop_gdp and emissions
 data = pd.merge(pop_gdp, em, how='left', on=['Year', 'Country Name'])
 data['Emissions per Capita'] = data['Total emissions']/data['Population']
+data['Gdp per Capita'] = data['Gdp']/data['Population']
 print(data.columns)
-print(data.groupby(['Country Name', 'Year'])["Emissions per Capita"].sum())
 
 # CO2 emissions per capita
+cords = data.groupby(["Year"])["Emissions per Capita"].nlargest().index.get_level_values(1).tolist()
+emissions_table = data.iloc[cords, [0, 1, 5, 4]].reset_index(drop=True)
+print(emissions_table)
 
 # Gdp per capita for each year top 5
+cords = data.groupby(["Year"])["Gdp per Capita"].nlargest().index.get_level_values(1).tolist()
+emissions_table = data.iloc[cords, [0, 1, 3, -1]].reset_index(drop=True)
+print(emissions_table)
+
 
 # emissions per capita loss in last 10 years
-print(asn.emission_balance(data)[0])
-print(asn.emission_balance(data)[1])
+# print(asn.emission_balance(data)[0])
+# print(asn.emission_balance(data)[1])
 
