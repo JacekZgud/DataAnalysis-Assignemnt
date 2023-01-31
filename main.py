@@ -58,6 +58,8 @@ print(emissions_table)
 
 
 # emissions per capita loss in last 10 years
-# print(asn.emission_balance(data)[0])
-# print(asn.emission_balance(data)[1])
+print('Top 5 emissions gained: ')
+print(asn.emission_balance(data)[0])
+print('Top 5 emissions reduced: ')
+print(asn.emission_balance(data)[1])
 
