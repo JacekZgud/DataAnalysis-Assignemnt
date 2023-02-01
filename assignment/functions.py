@@ -10,13 +10,19 @@ import re
 # structure is the same as the one supplied by learning team to moodle (plus unpacked)
 def file_opener(file_name):
     if file_name == 'co2-fossil-by-nation_zip':
-        path = os.path.join(os.getcwd(), 'Data', file_name, 'data', 'fossil-fuel-co2-emissions-by-nation_csv.csv')
+        path = os.path.join(os.getcwd(), '../Data', file_name, 'data', 'fossil-fuel-co2-emissions-by-nation_csv.csv')
         file = pd.read_csv(path, header=0)
     else:
-        path = os.path.join(os.getcwd(), 'Data', file_name)
+        path = os.path.join(os.getcwd(), '../Data', file_name)
         path = os.path.join(path, f"{file_name}.csv")
         file = pd.read_csv(path, header=2)
     return file
+
+
+def years_range():
+    bg = input("Beginning year:")
+    end = input("End year:")
+    return bg, end
 
 
 # Function that selects years in data if no other year-span is supplied

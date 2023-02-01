@@ -1,8 +1,6 @@
-
 import numpy as np
 import pandas as pd
 import functions as asn
-import test_tests
 
 # import data
 gdp = asn.file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
@@ -18,8 +16,7 @@ pop = pop.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
 gdp = gdp.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
 
 # Provide different year span:
-bg = input("Beginning year:")
-end = input("End year:")
+bg, end = asn.years_range()
 
 
 if len(bg) != 0 and len(end) != 0:
