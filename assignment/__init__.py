@@ -1,7 +1,17 @@
 import numpy as np
 import pandas as pd
 import functions as asn
+import argparse
 
+
+parser = argparse.ArgumentParser(description='Analyse historical emissions and gdp data')
+parser.add_argument("gdp", help="file containing gdp")
+parser.add_argument("pop", help="file containing populations")
+parser.add_argument("em", help="file containing emissions")
+parser.add_argument("-beginning", type=int, default=None, help="Minimum of preferred time period")
+parser.add_argument("-end", type=int, default=None, help="Maximum of preferred time period")
+
+args = parser.parse_args()
 # import data
 gdp = asn.file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
 pop = asn.file_opener('API_SP.POP.TOTL_DS2_en_csv_v2_4751604')
