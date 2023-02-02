@@ -4,20 +4,27 @@ import numpy as np
 import re
 import argparse
 
+
 # function input: folder name of relevant data
 # output: required data-file in python environment  with .csv extension
 # function works only on file system  which
 # structure is the same as the one supplied by learning team to moodle (plus unpacked)
+def pars():
+    parser = argparse.ArgumentParser(description='Analyse historical emissions and gdp data')
+    parser.add_argument("gdp", type=argparse.FileType('r'),  help="file containing gdp")
+    parser.add_argument("pop",type=argparse.FileType('r'), help="file containing populations")
+    parser.add_argument("em", type=argparse.FileType('r'), help="file containing emissions")
+    parser.add_argument("-beginning", type=int, default=None, help="Minimum of preferred time period")
+    parser.add_argument("-end", type=int, default=None, help="Maximum of preferred time period")
+    args = parser.parse_args()
+    return args
 
 
-def file_opener(file_name):
-    if file_name == 'co2-fossil-by-nation_zip':
-        path = os.path.join(os.getcwd(), '../Data', file_name, 'data', 'fossil-fuel-co2-emissions-by-nation_csv.csv')
-        file = pd.read_csv(path, header=0)
+def file_opener(file_name, emi=0):
+    if emi == 1:
+        file = pd.read_csv(file_name, header=0)
     else:
-        path = os.path.join(os.getcwd(), '../Data', file_name)
-        path = os.path.join(path, f"{file_name}.csv")
-        file = pd.read_csv(path, header=2)
+        file = pd.read_csv(file_name, header=2)
     return file
 
 

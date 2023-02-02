@@ -1,35 +1,34 @@
 import numpy as np
 import pandas as pd
 import functions as asn
-import argparse
 
 
-parser = argparse.ArgumentParser(description='Analyse historical emissions and gdp data')
-parser.add_argument("gdp", help="file containing gdp")
-parser.add_argument("pop", help="file containing populations")
-parser.add_argument("em", help="file containing emissions")
-parser.add_argument("-beginning", type=int, default=None, help="Minimum of preferred time period")
-parser.add_argument("-end", type=int, default=None, help="Maximum of preferred time period")
+gdp = asn.pars().gdp
+pop = asn.pars().pop
+em = asn.pars().em
 
-args = parser.parse_args()
+
 # import data
-gdp = asn.file_opener('API_NY.GDP.MKTP.CD_DS2_en_csv_v2_4751562')
-pop = asn.file_opener('API_SP.POP.TOTL_DS2_en_csv_v2_4751604')
-em = asn.file_opener('co2-fossil-by-nation_zip')
+gdp = asn.file_opener(gdp)
+pop = asn.file_opener(pop)
+em = asn.file_opener(em, 1)
+print(em)
 
 # clean data
 pop = pop.dropna(axis=1, how='all')
 gdp = gdp.dropna(axis=1, how='all')
 em = em.dropna(axis=0, how='all')
+print(pop)
 em = em[['Year', 'Country', 'Total', 'Per Capita']]
 pop = pop.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
 gdp = gdp.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
 
 # Provide different year span:
-bg, end = asn.years_range()
+bg = asn.pars().beginning
+end = asn.pars().end
 
 
-if len(bg) != 0 and len(end) != 0:
+if bg is not None and end is not None:
     pop, gdp, em = asn.years_interval_merger(pop, gdp, em, bg, end)
 else:
     pop, gdp, em = asn.years_merger(pop, gdp, em)
