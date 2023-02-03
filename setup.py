@@ -10,10 +10,6 @@ setuptools.setup(
     description="Assignment package for Python in data science course",
     url="https://github.com/JacekZgud/Final_Assignment.git",
     packages=setuptools.find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        ],
+    install_requires=['pytest==6.2.4', 'numpy==1.24.1', 'pandas==1.5.3'],
     python_requires='>=3.6',
     )

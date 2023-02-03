@@ -1,4 +1,3 @@
-import os.path
 import pandas as pd
 import numpy as np
 import re
@@ -12,9 +11,9 @@ import argparse
 def pars():
     parser = argparse.ArgumentParser(description='Analyse historical emissions and gdp data')
     parser.add_argument("gdp", type=argparse.FileType('r'),  help="file containing gdp")
-    parser.add_argument("pop",type=argparse.FileType('r'), help="file containing populations")
+    parser.add_argument("pop", type=argparse.FileType('r'), help="file containing populations")
     parser.add_argument("em", type=argparse.FileType('r'), help="file containing emissions")
-    parser.add_argument("-beginning", type=int, default=None, help="Minimum of preferred time period")
+    parser.add_argument("-beg", type=int, default=None, help="Minimum of preferred time period")
     parser.add_argument("-end", type=int, default=None, help="Maximum of preferred time period")
     args = parser.parse_args()
     return args
@@ -71,13 +70,39 @@ def country_cleaner(data):
     return data
 
 
-# Function that measures changes in emission per capita in last 10 years present in supplied dataframe
-def emission_balance(data):
-    years = [0, 0]
-    years[0], years[1] = data.Year.unique()[-1], data.Year.unique()[-11]
-    loss = data[data.Year.isin(years)]
-    loss.loc[loss.Year.isin([years[1]]), ['Emissions per Capita']] \
-        = loss[loss.Year.isin([years[1]])]['Emissions per Capita'].apply(lambda x: -x)
-    r1 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nlargest()
-    r2 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nsmallest()
-    return[r1, r2]
+def data_merger(pop, gdp, em):
+    #  Adjust and merge gdp and pop
+    pop = pop.melt(id_vars='Country Name', var_name='Year', value_name='Population')
+    gdp = gdp.melt(id_vars='Country Name', var_name='Year', value_name='Gdp')
+    pop_gdp = pd.merge(pop, gdp, how='inner')
+    pop_gdp = pop_gdp[['Year', 'Country Name', 'Population', 'Gdp']]
+
+    pop_gdp = pop_gdp[
+        pop_gdp['Country Name'].isin(np.intersect1d(em.Country.unique(), pop_gdp['Country Name'].unique()))]
+    em = em[em.Country.isin(np.intersect1d(em.Country.unique(), pop_gdp['Country Name'].unique()))]
+    em.rename(columns={'Country': 'Country Name', 'Total': 'Total emissions', 'Per Capita': 'Emissions per Capita'},
+              inplace='True')
+    pop_gdp.Year = pop_gdp.Year.astype('int64')
+    # merge pop_gdp and emissions
+    data = pd.merge(pop_gdp, em, how='left', on=['Year', 'Country Name'])
+    return data
+
+
+def data_cleaner(pop, gdp, em, bg, end):
+    pop = pop.dropna(axis=1, how='all')
+    gdp = gdp.dropna(axis=1, how='all')
+    em = em.dropna(axis=0, how='all')
+    em = em[['Year', 'Country', 'Total', 'Per Capita']]
+    pop = pop.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
+    gdp = gdp.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
+
+    if bg is not None and end is not None:
+        pop, gdp, em = years_interval_merger(pop, gdp, em, bg, end)
+    else:
+        pop, gdp, em = years_merger(pop, gdp, em)
+
+    pop['Country Name'] = country_cleaner(pop['Country Name'])
+    gdp['Country Name'] = country_cleaner(gdp['Country Name'])
+    em.Country = country_cleaner(em.Country)
+
+    return pop, gdp, em

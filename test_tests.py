@@ -1,5 +1,5 @@
 import unittest
-from assignment.functions import file_opener
+from assignment.d_preparation import file_opener
 
 
 class MyTestCase(unittest.TestCase):
@@ -12,9 +12,6 @@ class MyTestCase(unittest.TestCase):
         self.assertIsNotNone(self.file1, "Upload correct gdp file!")
         self.assertIsNotNone(self.file2, "Upload correct pop file!")
         self.assertIsNotNone(self.file3, "Upload correct emissions file!")
-
-    def test_correct_date_format(self):
-        self.__setattr__("assignment.functions.years_merge", lambda bg, end: ('2000', '2014'))
 
 
 if __name__ == '__main__':
