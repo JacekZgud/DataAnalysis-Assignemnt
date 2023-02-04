@@ -10,7 +10,7 @@ import argparse
 # structure is the same as the one supplied by learning team to moodle (plus unpacked)
 def pars():
     parser = argparse.ArgumentParser(description='Analyse historical emissions and gdp data')
-    parser.add_argument("gdp", type=argparse.FileType('r'),  help="file containing gdp")
+    parser.add_argument("gdp", type=argparse.FileType('r'), help="file containing gdp")
     parser.add_argument("pop", type=argparse.FileType('r'), help="file containing populations")
     parser.add_argument("em", type=argparse.FileType('r'), help="file containing emissions")
     parser.add_argument("-beg", type=int, default=None, help="Minimum of preferred time period")
@@ -27,12 +27,6 @@ def file_opener(file_name, emi=0):
     return file
 
 
-def years_range():
-    bg = input("Beginning year:")
-    end = input("End year:")
-    return bg, end
-
-
 # Function that selects years in data if no other year-span is supplied
 # input: set of three data-like structures
 # output: set of three data-like structures but trimmed to have the same year span which is the intersection of
@@ -45,7 +39,7 @@ def years_merger(population, gdp_loc, emissions):
     emissions = emissions[emissions.Year.isin(all_years.astype('int'))]
     gdp_loc = pd.concat([gdp_loc.iloc[:, [0]], gdp_loc.loc[:, all_years]], axis=1)
     population = pd.concat([population.iloc[:, [0]], population.loc[:, all_years]], axis=1)
-    return[population, gdp_loc, emissions]
+    return [population, gdp_loc, emissions]
 
 
 # Function that selects years in data if  other year-span is supplied
@@ -59,33 +53,41 @@ def years_interval_merger(population, gdp_loc, emissions, beginning, end):
     all_years = list(map(str, all_years))
     gdp_loc = pd.concat([gdp_loc.iloc[:, [0]], gdp_loc.loc[:, all_years]], axis=1)
     population = pd.concat([population.iloc[:, [0]], population.loc[:, all_years]], axis=1)
-    return[population, gdp_loc, emissions]
+    return [population, gdp_loc, emissions]
 
 
 # Function that cleans columns with country names, changes letters to lower ones and removes all words in brackets
 # input: column of relevant data frame
 # output: column of data frame but with changed letters to lower ones and removed all words in brackets
-def country_cleaner(data):
-    data = data.apply(lambda x: x.lower()).apply(lambda x: re.sub(" \(.*?\)", "", x))
+def country_cleaner_1(data):
+    data = data.apply(lambda x: x.lower())
+    return data
+
+
+def country_cleaner_2(data):
+    data = data.apply(lambda x: re.sub(" \(.*?\)", "", x))
+    data = data.apply(lambda x: re.sub("republic of ", "", x))
+
     return data
 
 
 def data_merger(pop, gdp, em):
-    #  Adjust and merge gdp and pop
-    pop = pop.melt(id_vars='Country Name', var_name='Year', value_name='Population')
-    gdp = gdp.melt(id_vars='Country Name', var_name='Year', value_name='Gdp')
     pop_gdp = pd.merge(pop, gdp, how='inner')
     pop_gdp = pop_gdp[['Year', 'Country Name', 'Population', 'Gdp']]
-
     pop_gdp = pop_gdp[
-        pop_gdp['Country Name'].isin(np.intersect1d(em.Country.unique(), pop_gdp['Country Name'].unique()))]
-    em = em[em.Country.isin(np.intersect1d(em.Country.unique(), pop_gdp['Country Name'].unique()))]
-    em.rename(columns={'Country': 'Country Name', 'Total': 'Total emissions', 'Per Capita': 'Emissions per Capita'},
-              inplace='True')
-    pop_gdp.Year = pop_gdp.Year.astype('int64')
-    # merge pop_gdp and emissions
+        pop_gdp['Country Name'].isin(np.intersect1d(em['Country Name'].unique(), pop_gdp['Country Name'].unique()))]
+    em = em[em['Country Name'].isin(np.intersect1d(em['Country Name'].unique(), pop_gdp['Country Name'].unique()))]
+
     data = pd.merge(pop_gdp, em, how='left', on=['Year', 'Country Name'])
     return data
+
+
+def data_loss(pop, em):
+    rat1 = len(list(np.intersect1d(em['Country Name'].unique(), pop['Country Name'].unique())))\
+          / len(list(pop['Country Name'].unique()))
+    rat2 = len(list(np.intersect1d(em['Country Name'].unique(), pop['Country Name'].unique())))\
+          / len(list(em['Country Name'].unique()))
+    return [rat1, rat2]
 
 
 def data_cleaner(pop, gdp, em, bg, end):
@@ -95,14 +97,14 @@ def data_cleaner(pop, gdp, em, bg, end):
     em = em[['Year', 'Country', 'Total', 'Per Capita']]
     pop = pop.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
     gdp = gdp.drop(columns=['Country Code', 'Indicator Name', 'Indicator Code'])
-
+    em.rename(columns={'Country': 'Country Name', 'Total': 'Total emissions', 'Per Capita': 'Emissions per Capita'},
+              inplace='True')
     if bg is not None and end is not None:
         pop, gdp, em = years_interval_merger(pop, gdp, em, bg, end)
     else:
         pop, gdp, em = years_merger(pop, gdp, em)
-
-    pop['Country Name'] = country_cleaner(pop['Country Name'])
-    gdp['Country Name'] = country_cleaner(gdp['Country Name'])
-    em.Country = country_cleaner(em.Country)
-
+    pop = pop.melt(id_vars='Country Name', var_name='Year', value_name='Population')
+    gdp = gdp.melt(id_vars='Country Name', var_name='Year', value_name='Gdp')
+    pop.Year = pop.Year.astype('int64')
+    gdp.Year = gdp.Year.astype('int64')
     return pop, gdp, em
