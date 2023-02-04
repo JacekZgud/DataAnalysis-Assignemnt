@@ -87,7 +87,7 @@ def data_loss(pop, em):
           / len(list(pop['Country Name'].unique()))
     rat2 = len(list(np.intersect1d(em['Country Name'].unique(), pop['Country Name'].unique())))\
           / len(list(em['Country Name'].unique()))
-    return [rat1, rat2]
+    return [rat1*100, rat2*100]
 
 
 def data_cleaner(pop, gdp, em, bg, end):

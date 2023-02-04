@@ -1,6 +1,5 @@
 import assignment.d_preparation as prep
 import assignment.d_analysis as an
-import numpy as np
 
 # import data from terminal
 gdp = prep.pars().gdp
@@ -26,17 +25,14 @@ pop, gdp, em = prep.data_cleaner(pop, gdp, em, bg, end)
 
 # how much data is lost
 
-print(f"{prep.data_loss(pop, em)}")
+print("Percent of remaining countries in population and emissions data frames\n" f"{prep.data_loss(pop, em)}""%")
 
 
 pop['Country Name'] = prep.country_cleaner_2(pop['Country Name'])
 gdp['Country Name'] = prep.country_cleaner_2(gdp['Country Name'])
 em['Country Name'] = prep.country_cleaner_2(em['Country Name'])
 
-print(f"{prep.data_loss(pop, em)}")
-
-print(em['Country Name'].unique())
-print(pop['Country Name'].unique())
+print("Percent of remaining countries in population and emissions data frames\n"  f"{prep.data_loss(pop, em)}")
 
 data = prep.data_merger(gdp, pop, em)
 data['Emissions per Capita'] = data['Total emissions'] / data['Population']
@@ -47,7 +43,6 @@ print(' Top 5 C02 emitters per capita per year \n ' f'{an.emissions_top(data)}')
 
 # Gdp per capita for each year top 5
 print(' Top 5 C02 emitters per capita per year \n ' f'{an.gdp_top(data)}')
-
 
 # emissions per capita loss in last 10 years
 print('Top 5 emissions per capita risen in last 10 years: ')
