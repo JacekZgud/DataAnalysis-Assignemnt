@@ -13,12 +13,14 @@ def emissions_top(data):
 
 # Function that measures changes in emission per capita in last 10 years present in supplied dataframe
 def emission_balance(data):
-    years = [0, 0]
-    years[0], years[1] = data.Year.unique()[-1], data.Year.unique()[-11]
-    loss = data[data.Year.isin(years)]
-    loss.loc[loss.Year.isin([years[1]]), ['Emissions per Capita']] \
-        = loss[loss.Year.isin([years[1]])]['Emissions per Capita'].apply(lambda x: -x)
-    r1 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nlargest()
-    r2 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nsmallest()
-    return[r1, r2]
-
+    if len(data.Year.unique()) >=10:
+        years = [0, 0]
+        years[0], years[1] = data.Year.unique()[-1], data.Year.unique()[-11]
+        loss = data[data.Year.isin(years)]
+        loss.loc[loss.Year.isin([years[1]]), ['Emissions per Capita']] \
+            = loss[loss.Year.isin([years[1]])]['Emissions per Capita'].apply(lambda x: -x)
+        r1 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nlargest()
+        r2 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nsmallest()
+        return[r1, r2]
+    else:
+        return "Data time interval too small"
