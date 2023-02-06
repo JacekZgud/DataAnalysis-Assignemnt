@@ -12,8 +12,8 @@ pop = prep.file_opener(pop)
 em = prep.file_opener(em, 1)
 
 # Provide different year span:
-bg = prep.pars().beg
-end = prep.pars().end
+bg = prep.pars().START
+end = prep.pars().END
 
 # capital to small letters in country columns
 pop['Country Name'] = prep.country_cleaner_1(pop['Country Name'])
