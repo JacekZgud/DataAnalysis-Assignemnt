@@ -10,11 +10,11 @@ import argparse
 # structure is the same as the one supplied by learning team to moodle (plus unpacked)
 def pars():
     parser = argparse.ArgumentParser(description='Analyse historical emissions and gdp data')
-    parser.add_argument("gdp", type=argparse.FileType('r'), help="file containing gdp")
-    parser.add_argument("pop", type=argparse.FileType('r'), help="file containing populations")
-    parser.add_argument("em", type=argparse.FileType('r'), help="file containing emissions")
-    parser.add_argument("-beg", type=int, default=None, help="Minimum of preferred time period")
-    parser.add_argument("-end", type=int, default=None, help="Maximum of preferred time period")
+    parser.add_argument("gdp", type=argparse.FileType('r'), help="trace to file containing gdp")
+    parser.add_argument("pop", type=argparse.FileType('r'), help="trace to file containing populations")
+    parser.add_argument("em", type=argparse.FileType('r'), help="trace to file containing emissions")
+    parser.add_argument("-START", type=int, default=None, help="Minimum of preferred time period")
+    parser.add_argument("-END", type=int, default=None, help="Maximum of preferred time period")
     args = parser.parse_args()
     return args
 
