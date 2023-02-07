@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: Final-Assignment
+Version: 0.0.1
+Summary: Assignment package for Python in data science course
+Home-page: https://github.com/JacekZgud/Final_Assignment.git
+Author: Jacek Zgud
+Author-email: jacek.zgud2@gmail.com
+Requires-Python: >=3.6
