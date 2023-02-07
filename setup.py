@@ -1,9 +1,9 @@
 import setuptools
-with open("./Final_package/README.md", "r", encoding="utf-8") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="Final_Assignment",
+    name="FinalAssignment",
     version="0.0.1",
     author="Jacek Zgud",
     author_email="jacek.zgud2@gmail.com",
