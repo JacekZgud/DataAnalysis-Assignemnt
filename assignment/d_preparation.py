@@ -13,8 +13,8 @@ def pars():
     parser.add_argument("gdp", type=argparse.FileType('r'), help="trace to file containing gdp")
     parser.add_argument("pop", type=argparse.FileType('r'), help="trace to file containing populations")
     parser.add_argument("em", type=argparse.FileType('r'), help="trace to file containing emissions")
-    parser.add_argument("-START", type=int, default=None, help="Minimum of preferred time period")
-    parser.add_argument("-END", type=int, default=None, help="Maximum of preferred time period")
+    parser.add_argument("-start", type=int, default=None, help="Minimum of preferred time period")
+    parser.add_argument("-end", type=int, default=None, help="Maximum of preferred time period")
     args = parser.parse_args()
     return args
 

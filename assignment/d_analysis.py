@@ -21,6 +21,7 @@ def emission_balance(data):
             = loss[loss.Year.isin([years[1]])]['Emissions per Capita'].apply(lambda x: -x)
         r1 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nlargest()
         r2 = loss.groupby(['Country Name'])["Emissions per Capita"].sum().nsmallest()
-        return[r1, r2]
+        return [r1,r2]
+
     else:
         return "Data time interval too small"

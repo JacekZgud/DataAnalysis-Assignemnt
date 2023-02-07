@@ -1,6 +1,7 @@
 import assignment.d_preparation as prep
 import assignment.d_analysis as an
 
+
 # import data from terminal
 gdp = prep.pars().gdp
 pop = prep.pars().pop
@@ -12,8 +13,8 @@ pop = prep.file_opener(pop)
 em = prep.file_opener(em, 1)
 
 # Provide different year span:
-bg = prep.pars().START
-end = prep.pars().END
+bg = prep.pars().start
+end = prep.pars().end
 
 # capital to small letters in country columns
 pop['Country Name'] = prep.country_cleaner_1(pop['Country Name'])
@@ -49,3 +50,4 @@ print('Top 5 emissions per capita risen in last 10 years: ')
 print(an.emission_balance(data)[0])
 print('Top 5 emissions per capita reduced in last 10 years: ')
 print(an.emission_balance(data)[1])
+
