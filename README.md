@@ -1,6 +1,6 @@
 # Data Analysis with Python - Jacek Zgud 
 ## Short description
-Simple program that calculates statistics concerning gdp and carbon emissions.
+A simple program that calculates statistics concerning GDP and carbon emissions.
 
 
 ## How to install
@@ -10,14 +10,14 @@ Activate the environment source data_an/bin/activate
 \
 Install package pip install git+https://github.com/JacekZgud/Final_Assignment.git
 
-## How tu run
+## How to run
 
-Run main.py script parameters needed are specified in subsection below
+Run main.py script parameters needed are specified in the subsection below
 
 ## Parameters needed to run program
 Use program (-h for help) main.py -h:
 
-Analyse historical emissions and gdp data
+Analyse historical emissions and GDP data
 \
 positional arguments:
 
